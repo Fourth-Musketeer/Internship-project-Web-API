@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Web_API.Models
 {
-    public interface ITasksRepository
+    public interface ITasksepository
     {
         Task<IEnumerable<Task>> GetTasks();
         Task<Task> GetTask(int taskId);

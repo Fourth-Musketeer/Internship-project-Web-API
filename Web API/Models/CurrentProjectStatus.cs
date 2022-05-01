@@ -1,6 +1,6 @@
 ﻿namespace Web_API.Models
 {
-    public enum CurrentStatus
+    public enum CurrentProjectStatus
     {
         NotStarted, Active, Completed
     }

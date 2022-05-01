@@ -8,7 +8,7 @@ namespace Web_API.Models
    
 
     
-    public class TaskRepository : ITasksRepository
+    public class TaskRepository : ITasksepository
     {
         private readonly AppDbContext appDbContext;
         public TaskRepository(AppDbContext appDbContext)
@@ -17,6 +17,11 @@ namespace Web_API.Models
         }
         public async Task<Task> AddTask(Task task)
         {
+            if (task.Project != null)
+            {
+                appDbContext.Entry(task.Project).State = EntityState.Unchanged;
+            }
+
             var result= await appDbContext.Tasks.AddAsync(task);
             await appDbContext.SaveChangesAsync();
             return result.Entity;
@@ -57,9 +62,17 @@ namespace Web_API.Models
                 result.TaskStatus = task.TaskStatus;
                 result.Name=task.Name;
                 result.Description = task.Description;
-
+                if (task.ProjectId != 0)
+                {
+                    result.ProjectId = task.ProjectId;
+                }
+                else if (task.Project != null)
+                {
+                    result.ProjectId = task.Project.Id;
+                }
+               
                 await appDbContext.SaveChangesAsync();
-                return result;
+                return result; 
             }
 
             return null;

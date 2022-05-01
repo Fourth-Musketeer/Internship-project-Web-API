@@ -18,6 +18,7 @@ namespace Web_API.Models
 
 
         [Required(ErrorMessage = "priority is required")]
+        [Range(1, 10, ErrorMessage = "Task priority range is invalid (1-10)")]
         public int Priority { get; set; }
 
 

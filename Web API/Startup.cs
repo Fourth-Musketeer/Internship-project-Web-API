@@ -31,8 +31,9 @@ namespace Web_API
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
             services.AddScoped<IProjectRepository, ProjectRepository>();
-            services.AddScoped<ITasksRepository, TaskRepository>();
-            services.AddControllers();
+            services.AddScoped<ITasksepository, TaskRepository>();
+           // services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web_API", Version = "v1" });
