@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Web_API.Models;
+﻿using DataAccessLayer.Entities;
+using Microsoft.EntityFrameworkCore;
 
-namespace Web_API.Data
+
+namespace DataAccessLayer
 {
     public class AppDbContext : DbContext
     {

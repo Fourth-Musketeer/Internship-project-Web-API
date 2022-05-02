@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Web_API.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.JsonPatch;
+using BusinessLogicLayer;
+using DataAccessLayer.Entities;
+using DataAccessLayer.Enums;
+using BusinessLogicLayer.Interfaces;
 
 namespace Web_API.Controllers
 {
@@ -14,11 +18,11 @@ namespace Web_API.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly IProjectRepository projectRepository;
+        private readonly IProjectBLL _projectBLL;
 
-        public ProjectsController(IProjectRepository projectRepository)
+        public ProjectsController(IProjectBLL projectBLL)
         {
-            this.projectRepository = projectRepository;
+            _projectBLL = projectBLL;
         }
 
         [HttpGet]
@@ -26,7 +30,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                return Ok(await projectRepository.GetProjects());
+                return Ok(await _projectBLL.GetProjects());
             }
             catch (System.Exception)
             {
@@ -41,7 +45,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                var result = await projectRepository.GetProject(id);
+                var result = await _projectBLL.GetProject(id);
 
                 if (result == null)
                 {
@@ -65,7 +69,7 @@ namespace Web_API.Controllers
                 if (project == null)
                     return BadRequest();
 
-                var p = projectRepository.GetProjectByName(project.Name).Result;
+                var p = _projectBLL.GetProjectByName(project.Name).Result;
 
                 if (p != null)
                 {
@@ -78,8 +82,10 @@ namespace Web_API.Controllers
                     ModelState.AddModelError("CompletionDate", "Completion date cannon be earlier that start date");
                     return BadRequest(ModelState);
                 }
+                       
+                
 
-                var createdProject = await projectRepository.AddProject(project);
+                var createdProject = await _projectBLL.AddProject(project);
 
                 return CreatedAtAction(nameof(GetProject), new { id = createdProject.Id }, createdProject);
             }
@@ -100,7 +106,7 @@ namespace Web_API.Controllers
                     return BadRequest("Project Id mismatch");
 
 
-                var projectToUpdate = await projectRepository.GetProject(id);
+                var projectToUpdate = await _projectBLL.GetProject(id);
                
 
                 if (projectToUpdate == null)
@@ -108,7 +114,7 @@ namespace Web_API.Controllers
                     return NotFound($"Project with Id = {id} not found");
                 }
 
-                var p = projectRepository.GetProjectByName(project.Name).Result;
+                var p = _projectBLL.GetProjectByName(project.Name).Result;
 
                 if (p != null)
                 {
@@ -123,7 +129,8 @@ namespace Web_API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                return await projectRepository.UpdateProject(project);
+
+                return await _projectBLL.UpdateProject(project);
 
 
             }
@@ -142,7 +149,7 @@ namespace Web_API.Controllers
             {
 
 
-                var projectToDelete = await projectRepository.GetProject(id);
+                var projectToDelete = await _projectBLL.GetProject(id);
 
                 if (projectToDelete == null)
                 {
@@ -151,7 +158,7 @@ namespace Web_API.Controllers
 
 
 
-                return Ok(await projectRepository.DeleteProject(id));
+                return Ok(await _projectBLL.DeleteProject(id));
 
 
             }
@@ -167,7 +174,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                var result = await projectRepository.Search(name, priority, currentProjectStatus);
+                var result = await _projectBLL.Search(name, priority, currentProjectStatus);
 
                 if (result.Any())
                 {
@@ -189,7 +196,7 @@ namespace Web_API.Controllers
         public async Task<ActionResult<Project>> Patch(int id, [FromBody] JsonPatchDocument<Project> patchEntity)
         {
 
-            return Ok(await projectRepository.UpdateProjectPatch(id, patchEntity));
+            return Ok(await _projectBLL.UpdateProjectPatch(id, patchEntity));
            
         }
 
@@ -197,11 +204,5 @@ namespace Web_API.Controllers
 
 
     }
-    //public bool  ValidateDate(DateTime begin, DateTime? end)
-    //{
-    //    if (begin > end)
-    //        return true;
-
-    //    return false;
-    //}
+ 
 }

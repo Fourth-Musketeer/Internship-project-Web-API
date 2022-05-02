@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using DataAccessLayer.Entities;
+using DataAccessLayer.Enums;
+using Microsoft.AspNetCore.JsonPatch;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Web_API.Models
+namespace DataAccessLayer.Interfaces
 {
     public interface IProjectRepository 
     {
@@ -10,7 +12,7 @@ namespace Web_API.Models
         Task<Project> GetProject(int projectId);
         Task<Project> AddProject(Project project);
         Task<Project> UpdateProject(Project project);
-        Task<Project> DeleteProject(int projectId);
+        Task<Project> DeleteProject(Project project);
         Task<Project> GetProjectByName(string name);
         Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus);
 

@@ -1,10 +1,17 @@
-﻿using System;
+﻿using DataAccessLayer.Entities;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Web_API.Models
+namespace BusinessLogicLayer.Models
 {
-    public class Task
+    public class TaskModel
     {
+
+
         public int Id { get; set; }
         public int ProjectId { get; set; }
 
@@ -25,9 +32,5 @@ namespace Web_API.Models
         [Required(ErrorMessage = "Task status is required")]
         public TaskStatus TaskStatus { get; set; }
         public Project Project { get; set; }
-
-
-
     }
-   
 }

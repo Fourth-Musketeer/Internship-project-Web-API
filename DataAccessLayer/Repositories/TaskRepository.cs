@@ -1,21 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataAccessLayer.Entities;
+using DataAccessLayer.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Web_API.Data;
 
-namespace Web_API.Models
+namespace DataAccessLayer.Repositories
 {
    
 
     
-    public class TaskRepository : ITasksepository
+    public class TaskRepository : ITaskRepository
     {
         private readonly AppDbContext appDbContext;
         public TaskRepository(AppDbContext appDbContext)
         {
             this.appDbContext = appDbContext;
         }
-        public async Task<Task> AddTask(Task task)
+        public async Task<Entities.Task> AddTask(Entities.Task task)
         {
             if (task.Project != null)
             {
@@ -27,7 +28,7 @@ namespace Web_API.Models
             return result.Entity;
         }
 
-        public async Task<Task> DeleteTask(int taskId)
+        public async Task<Entities.Task> DeleteTask(int taskId)
         {
             var result = await appDbContext.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
 
@@ -42,26 +43,21 @@ namespace Web_API.Models
 
         }
 
-        public async Task<Task> GetTask(int taskId)
+        public async Task<Entities.Task> GetTask(int taskId)
         {
             return await appDbContext.Tasks.Include(t=>t.Project).FirstOrDefaultAsync(t => t.Id == taskId);
         }
 
-        public async Task<IEnumerable<Task>> GetTasks()
+        public async Task<IEnumerable<Entities.Task>> GetTasks()
         {
             return await appDbContext.Tasks.ToListAsync();
         }
 
-        public async Task<Task> UpdateTask(Task task)
+        public async Task<Entities.Task> UpdateTask(Entities.Task task)
         {
             var result = await appDbContext.Tasks.FirstOrDefaultAsync(t=>t.Id==task.Id);
 
-            if (result != null)
-            {
-                result.Priority = task.Priority;
-                result.TaskStatus = task.TaskStatus;
-                result.Name=task.Name;
-                result.Description = task.Description;
+          
                 if (task.ProjectId != 0)
                 {
                     result.ProjectId = task.ProjectId;
@@ -70,12 +66,19 @@ namespace Web_API.Models
                 {
                     result.ProjectId = task.Project.Id;
                 }
-               
-                await appDbContext.SaveChangesAsync();
-                return result; 
-            }
 
-            return null;
+            result.TaskStatus = task.TaskStatus;
+            result.Description=task.Description;
+            result.Name = task.Name;
+            result.Priority = task.Priority;
+               
+                
+            await appDbContext.SaveChangesAsync();
+        
+            return result; 
+            
+
+          
         }
     }
 }

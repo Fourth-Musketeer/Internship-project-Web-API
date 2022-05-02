@@ -1,3 +1,8 @@
+using BusinessLogicLayer;
+using BusinessLogicLayer.Interfaces;
+using DataAccessLayer;
+using DataAccessLayer.Interfaces;
+using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,8 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Web_API.Data;
-using Web_API.Models;
+
 
 namespace Web_API
 {
@@ -30,9 +34,12 @@ namespace Web_API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
+            
             services.AddScoped<IProjectRepository, ProjectRepository>();
-            services.AddScoped<ITasksepository, TaskRepository>();
-           // services.AddControllers().AddNewtonsoftJson();
+            services.AddScoped<ITaskRepository, TaskRepository>();
+            services.AddScoped<IProjectBLL,ProjectBLL>();
+            services.AddScoped<ITaskBLL ,TaskBLL>();
+            // services.AddControllers().AddNewtonsoftJson();
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {

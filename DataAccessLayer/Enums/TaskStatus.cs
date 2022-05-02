@@ -1,4 +1,4 @@
-﻿namespace Web_API.Models
+﻿namespace DataAccessLayer.Enums
 {
     public enum TaskStatus
     {

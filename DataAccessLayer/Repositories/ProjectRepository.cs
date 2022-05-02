@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using DataAccessLayer.Entities;
+using DataAccessLayer.Enums;
+using DataAccessLayer.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Web_API.Data;
 
 
-namespace Web_API.Models
+
+namespace DataAccessLayer.Repositories
 {
     public class ProjectRepository : IProjectRepository
     {
@@ -18,25 +21,24 @@ namespace Web_API.Models
         }
         public async Task<Project> AddProject(Project project)
         {
-           var result = await appDbContext.Projects.AddAsync(project);
-           await appDbContext.SaveChangesAsync();
+            //var result = await appDbContext.Projects.AddAsync(project);
+           await appDbContext.Projects.AddAsync(project);
+            await appDbContext.SaveChangesAsync();
 
-            return result.Entity;
+            //return result.Entity;
+            return project;
         }
 
-        public async Task<Project> DeleteProject(int projectId)
+        public async Task<Project> DeleteProject(Project project)
         {
-            var result = await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+            //var result = await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
 
-            if (result != null)
-            {
-                appDbContext.Projects.Remove(result);
-                await appDbContext.SaveChangesAsync();
-                return result;
-              
-            }
+                appDbContext.Projects.Remove(project);
+                 await appDbContext.SaveChangesAsync();
+                return project;
+          
 
-            return null;
+          
            
             
         }
@@ -53,10 +55,9 @@ namespace Web_API.Models
 
         public async Task<Project> UpdateProject(Project project)
         {
+
            var result=await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == project.Id);
 
-            if (result != null)
-            {
                 result.Name = project.Name;
                 result.StartDate = project.StartDate;
                 result.CompletionDate=project.CompletionDate;
@@ -66,9 +67,7 @@ namespace Web_API.Models
                 await appDbContext.SaveChangesAsync();
                 return result;
 
-            }
-
-            return null;
+           
         }
 
         public  async Task<Project> GetProjectByName(string name)
@@ -100,18 +99,17 @@ namespace Web_API.Models
         
         }
 
-        public async Task<Project> UpdateProjectPatch(int projectId, JsonPatchDocument<Project> project)
+      
+          public async Task<Project> UpdateProjectPatch(int projectId, JsonPatchDocument<Project> project)
         {
             var result = await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
 
-            if (result != null)
-            {
                 project.ApplyTo(result);
                 await appDbContext.SaveChangesAsync();
                 return result;
-            }
+            
 
-            return null;
+           
         }
     }
 }

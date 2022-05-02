@@ -1,4 +1,5 @@
 ﻿
+using DataAccessLayer.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Web_API.Models
+namespace DataAccessLayer.Entities
 {
     public class Project
     {

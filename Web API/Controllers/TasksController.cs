@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Web_API.Models;
+
 using System;
+using BusinessLogicLayer;
+using DataAccessLayer.Entities;
+using BusinessLogicLayer.Interfaces;
 
 namespace Web_API.Controllers
 {
@@ -11,11 +14,11 @@ namespace Web_API.Controllers
     public class TasksController : ControllerBase
     {
 
-        private readonly ITasksepository taskRepository;
+        private readonly ITaskBLL _taskBLL;
 
-        public TasksController(ITasksepository taskRepository)
+        public TasksController(ITaskBLL taskBLL)
         {
-            this.taskRepository = taskRepository;
+            _taskBLL = taskBLL;
 
         }
 
@@ -25,7 +28,7 @@ namespace Web_API.Controllers
 
             try
             {
-                return  Ok(await taskRepository.GetTasks());
+                return  Ok(await _taskBLL.GetTasks());
             }
             catch (Exception)
             {
@@ -37,11 +40,11 @@ namespace Web_API.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Models.Task>> GetTask(int id)
+        public async Task<ActionResult<DataAccessLayer.Entities.Task>> GetTask(int id)
         {
             try
             {
-                var result = await taskRepository.GetTask(id);
+                var result = await _taskBLL.GetTask(id);
 
                 if (result == null)
                 {
@@ -59,14 +62,14 @@ namespace Web_API.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Models.Task>> CreateTaskt(Models.Task task)
+        public async Task<ActionResult<DataAccessLayer.Entities.Task>> CreateTaskt(DataAccessLayer.Entities.Task task)
         {
             try
             {
                 if (task == null)
                     return BadRequest();
 
-                var createdTask = await taskRepository.AddTask(task);
+                var createdTask = await _taskBLL.AddTask(task);
 
                 return CreatedAtAction(nameof(GetTask), new { id = createdTask.Id }, createdTask);
             }
@@ -78,14 +81,14 @@ namespace Web_API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Models.Task>> UpdateTask(int id, Models.Task task)
+        public async Task<ActionResult<DataAccessLayer.Entities.Task>> UpdateTask(int id, DataAccessLayer.Entities.Task task)
         {
             try
             {
                 if (id != task.Id)
                     return BadRequest("Project Id mismatch");
 
-                var taskToUpdate = await taskRepository.GetTask(id);
+                var taskToUpdate = await _taskBLL.GetTask(id);
 
                 if (taskToUpdate == null)
                 {
@@ -94,7 +97,7 @@ namespace Web_API.Controllers
 
               
 
-                return await taskRepository.UpdateTask(task);
+                return await _taskBLL.UpdateTask(task);
 
 
             }
@@ -106,13 +109,13 @@ namespace Web_API.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<Models.Task>> DeleteTask(int id)
+        public async Task<ActionResult<DataAccessLayer.Entities.Task>> DeleteTask(int id)
         {
             try
             {
 
 
-                var taskToDelete = await taskRepository.GetTask(id);
+                var taskToDelete = await _taskBLL.GetTask(id);
 
                 if (taskToDelete == null)
                 {
@@ -121,7 +124,7 @@ namespace Web_API.Controllers
 
 
 
-                return Ok(await taskRepository.DeleteTask(id));
+                return Ok(await _taskBLL.DeleteTask(id));
 
 
             }
