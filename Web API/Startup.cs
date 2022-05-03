@@ -39,7 +39,7 @@ namespace Web_API
             services.AddScoped<ITaskRepository, TaskRepository>();
             services.AddScoped<IProjectBLL,ProjectBLL>();
             services.AddScoped<ITaskBLL ,TaskBLL>();
-            // services.AddControllers().AddNewtonsoftJson();
+        
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {

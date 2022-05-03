@@ -11,31 +11,31 @@ namespace DataAccessLayer.Repositories
     
     public class TaskRepository : ITaskRepository
     {
-        private readonly AppDbContext appDbContext;
+        private readonly AppDbContext _appDbContext;
         public TaskRepository(AppDbContext appDbContext)
         {
-            this.appDbContext = appDbContext;
+            _appDbContext = appDbContext;
         }
         public async Task<Entities.Task> AddTask(Entities.Task task)
         {
             if (task.Project != null)
             {
-                appDbContext.Entry(task.Project).State = EntityState.Unchanged;
+                _appDbContext.Entry(task.Project).State = EntityState.Unchanged;
             }
 
-            var result= await appDbContext.Tasks.AddAsync(task);
-            await appDbContext.SaveChangesAsync();
+            var result= await _appDbContext.Tasks.AddAsync(task);
+            await _appDbContext.SaveChangesAsync();
             return result.Entity;
         }
 
         public async Task<Entities.Task> DeleteTask(int taskId)
         {
-            var result = await appDbContext.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
+            var result = await _appDbContext.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
 
            if (result != null)
             {
-                appDbContext.Tasks.Remove(result);
-                await appDbContext.SaveChangesAsync();
+                _appDbContext.Tasks.Remove(result);
+                await _appDbContext.SaveChangesAsync();
                 return result;
             }
 
@@ -45,17 +45,17 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Entities.Task> GetTask(int taskId)
         {
-            return await appDbContext.Tasks.Include(t=>t.Project).FirstOrDefaultAsync(t => t.Id == taskId);
+            return await _appDbContext.Tasks.Include(t=>t.Project).FirstOrDefaultAsync(t => t.Id == taskId);
         }
 
         public async Task<IEnumerable<Entities.Task>> GetTasks()
         {
-            return await appDbContext.Tasks.ToListAsync();
+            return await _appDbContext.Tasks.ToListAsync();
         }
 
         public async Task<Entities.Task> UpdateTask(Entities.Task task)
         {
-            var result = await appDbContext.Tasks.FirstOrDefaultAsync(t=>t.Id==task.Id);
+            var result = await _appDbContext.Tasks.FirstOrDefaultAsync(t=>t.Id==task.Id);
 
             result.ProjectId = task.ProjectId;
             result.Name = task.Name;
@@ -64,7 +64,7 @@ namespace DataAccessLayer.Repositories
             result.Priority = task.Priority;
                
                 
-            await appDbContext.SaveChangesAsync();
+            await _appDbContext.SaveChangesAsync();
         
             return result; 
             
@@ -74,7 +74,7 @@ namespace DataAccessLayer.Repositories
 
         public Project GetProject(int projectId)
         {
-            var result=  appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var result= _appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
             return result.Result;
         }
     }

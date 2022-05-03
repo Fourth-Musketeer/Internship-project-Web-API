@@ -22,7 +22,7 @@ namespace BusinessLogicLayer
 
         public async Task<DataAccessLayer.Entities.Task> GetTask(int taskId)
         {
-            ///check existance
+            ///existance checked at controller
             return await _taskRepository.GetTask(taskId);
         }
 

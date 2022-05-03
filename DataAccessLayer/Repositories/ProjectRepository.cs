@@ -14,16 +14,16 @@ namespace DataAccessLayer.Repositories
     public class ProjectRepository : IProjectRepository
     {
 
-        public readonly AppDbContext appDbContext;
+        public readonly AppDbContext _appDbContext;
         public ProjectRepository(AppDbContext appDbContext)
         {
-            this.appDbContext = appDbContext;  
+            _appDbContext = appDbContext;  
         }
         public async Task<Project> AddProject(Project project)
         {
             
-            await appDbContext.Projects.AddAsync(project);
-            await appDbContext.SaveChangesAsync();
+            await _appDbContext.Projects.AddAsync(project);
+            await _appDbContext.SaveChangesAsync();
 
            
             return project;
@@ -31,9 +31,9 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Project> DeleteProject(Project project)
         {
-          
-                 appDbContext.Projects.Remove(project);
-                 await appDbContext.SaveChangesAsync();
+
+                 _appDbContext.Projects.Remove(project);
+                 await _appDbContext.SaveChangesAsync();
 
                 return project;
             
@@ -41,18 +41,18 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Project> GetProject(int projectId)
         {
-            return await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+            return await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
         }
 
         public async Task<IEnumerable<Project>> GetProjects()
         {
-            return await appDbContext.Projects.ToListAsync();
+            return await _appDbContext.Projects.ToListAsync();
         }
 
         public async Task<Project> UpdateProject(Project project)
         {
 
-           var result=await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == project.Id);
+           var result=await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == project.Id);
 
                 result.Name = project.Name;
                 result.StartDate = project.StartDate;
@@ -60,7 +60,7 @@ namespace DataAccessLayer.Repositories
                 result.Priority=project.Priority;
                 result.CurrentStatus=project.CurrentStatus;
 
-                await appDbContext.SaveChangesAsync();
+                await _appDbContext.SaveChangesAsync();
                 return result;
 
            
@@ -68,19 +68,19 @@ namespace DataAccessLayer.Repositories
 
         public  async Task<Project> GetProjectByName(string name)
         {
-            var result= await appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name);
+            var result= await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name);
             return result;
            
         }
        public async Task<Project> GetProjectByNameAndId(string name, int id)
         {
-            var result = await appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name && p.Id != id);
+            var result = await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name && p.Id != id);
             return result;
         }
 
         public async Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus, string sort)
         {
-            IQueryable<Project> query = appDbContext.Projects;
+            IQueryable<Project> query = _appDbContext.Projects;
 
             if (!string.IsNullOrEmpty(name))
             {
@@ -108,7 +108,7 @@ namespace DataAccessLayer.Repositories
 
        public async Task<IEnumerable<Entities.Task>> FindAllTasks(int projectId)
         {
-            IQueryable<Entities.Task> AllTasksInProject = appDbContext.Tasks.Where(t=>t.ProjectId == projectId);
+            IQueryable<Entities.Task> AllTasksInProject = _appDbContext.Tasks.Where(t=>t.ProjectId == projectId);
 
             return await AllTasksInProject.ToListAsync();
         }
@@ -116,10 +116,10 @@ namespace DataAccessLayer.Repositories
 
         public async Task<Project> UpdateProjectPatch(int projectId, JsonPatchDocument<Project> project)
         {
-            var result = await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+            var result = await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
 
                 project.ApplyTo(result);
-                await appDbContext.SaveChangesAsync();
+                await _appDbContext.SaveChangesAsync();
                 return result;
             
 

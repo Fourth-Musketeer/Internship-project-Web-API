@@ -21,7 +21,6 @@ namespace Web_API.Controllers
         public TasksController(ITaskBLL taskBLL)
         {
             _taskBLL = taskBLL;
-
         }
 
         [HttpGet]
@@ -36,10 +35,10 @@ namespace Web_API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
 
-            }
-            
+            }     
            
         }
+
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<DataAccessLayer.Entities.Task>> GetTask(int id)
@@ -61,6 +60,7 @@ namespace Web_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
             }
         }
+
 
 
         [HttpPost]
@@ -94,6 +94,7 @@ namespace Web_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new task record");
             }
         }
+
 
         [HttpPut("{id:int}")]
         public async Task<ActionResult<DataAccessLayer.Entities.Task>> UpdateTask(int id, TaskModel taskModel)
@@ -137,6 +138,7 @@ namespace Web_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating task record");
             }
         }
+
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<DataAccessLayer.Entities.Task>> DeleteTask(int id)

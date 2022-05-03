@@ -109,7 +109,6 @@ namespace BusinessLogicLayer
            var result = await _projectRepository.UpdateProject(projectEntity);
 
             return result;
-
             
         }
 

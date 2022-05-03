@@ -16,9 +16,7 @@ namespace DataAccessLayer.Interfaces
         Task<Project> GetProjectByName(string name);
         Task<Project> GetProjectByNameAndId(string name, int id);
         Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus, string sort);
-
         Task<Project> UpdateProjectPatch(int projectId, JsonPatchDocument<Project> project);
-
         Task<IEnumerable<Entities.Task>> FindAllTasks(int projectId);
 
 
