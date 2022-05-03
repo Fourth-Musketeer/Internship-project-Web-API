@@ -1,6 +1,6 @@
 ﻿namespace DataAccessLayer.Enums
 {
-    public enum TaskStatus
+    public enum CurrentTaskStatus
     {
         ToDo, InProgress, Done
     }

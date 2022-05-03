@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Entities;
+﻿using BusinessLogicLayer.Models;
+using DataAccessLayer.Entities;
 using DataAccessLayer.Enums;
 using Microsoft.AspNetCore.JsonPatch;
 using System;
@@ -14,13 +15,14 @@ namespace BusinessLogicLayer.Interfaces
 
          Task<Project> GetProject(int projectId);
          Task<IEnumerable<Project>> GetProjects();
-         Task<Project> AddProject(Project project);
+         Task<Project> AddProject(ProjectModel project);
          Task<Project> DeleteProject(int projectId);
-         Task<Project> UpdateProject(Project project);
+         Task<Project> UpdateProject(int ProjectId, ProjectModel project);
          Task<Project> UpdateProjectPatch(int projectId, JsonPatchDocument<Project> project);
          Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus);
          Task<Project> GetProjectByName(string name);
-       
-      
+         Task<Project> GetProjectByNameAndId(string name, int id);
+
+
     }
 }

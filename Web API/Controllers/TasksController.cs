@@ -6,6 +6,8 @@ using System;
 using BusinessLogicLayer;
 using DataAccessLayer.Entities;
 using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Models;
+using System.Net;
 
 namespace Web_API.Controllers
 {
@@ -62,14 +64,27 @@ namespace Web_API.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<DataAccessLayer.Entities.Task>> CreateTaskt(DataAccessLayer.Entities.Task task)
+        public async Task<ActionResult<DataAccessLayer.Entities.Task>> CreateTask(TaskModel taskModel)
         {
             try
             {
-                if (task == null)
+                if (taskModel == null)
                     return BadRequest();
 
-                var createdTask = await _taskBLL.AddTask(task);
+                var ProjectOfTask = _taskBLL.GetProject(taskModel.ProjectId);
+
+                if (ProjectOfTask == null)
+                {
+                    return NotFound($"Project with Id = {taskModel.ProjectId} not found");
+                }
+
+                var createdTask = await _taskBLL.AddTask(taskModel);
+
+                if (createdTask == null)
+                {
+                    ModelState.AddModelError("TaskStatus", "Task status error. If project is done status must be completed. If project is not started status cannot be completed");
+                    return BadRequest(ModelState);
+                }
 
                 return CreatedAtAction(nameof(GetTask), new { id = createdTask.Id }, createdTask);
             }
@@ -81,27 +96,42 @@ namespace Web_API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<DataAccessLayer.Entities.Task>> UpdateTask(int id, DataAccessLayer.Entities.Task task)
+        public async Task<ActionResult<DataAccessLayer.Entities.Task>> UpdateTask(int id, TaskModel taskModel)
         {
             try
             {
-                if (id != task.Id)
-                    return BadRequest("Project Id mismatch");
+                var ProjectOfTask =  _taskBLL.GetProject(taskModel.ProjectId);
 
-                var taskToUpdate = await _taskBLL.GetTask(id);
+                var taskToUpdate = _taskBLL.GetTask(id).Result;///!!!
 
-                if (taskToUpdate == null)
+                if (ProjectOfTask == null)
+                {
+                    return NotFound($"Project with Id = {taskModel.ProjectId} not found");
+                }
+                else if (taskToUpdate == null)
                 {
                     return NotFound($"Task with Id = {id} not found");
                 }
 
+                var UpdatedTask= await _taskBLL.UpdateTask(id, taskModel);
               
+                if (UpdatedTask == null)
+                {
+                    ModelState.AddModelError("TaskStatus", "Task status error. If project is done status must be 'done'. If project is not started status must be 'toDo'");
+                    return BadRequest(ModelState);
+                }
 
-                return await _taskBLL.UpdateTask(task);
+                return  UpdatedTask;
+
 
 
             }
-            catch (Exception)
+            catch (WebException)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error updating task record");
+            }
+            catch (Exception )
             {
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating task record");

@@ -1,4 +1,5 @@
 ﻿
+using DataAccessLayer.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace DataAccessLayer.Interfaces
         Task<Entities.Task> AddTask(Entities.Task task);
         Task<Entities.Task> UpdateTask(Entities.Task task);
         Task<Entities.Task> DeleteTask(int taskId);
+        Project GetProject(int projectId);
 
     }
 }

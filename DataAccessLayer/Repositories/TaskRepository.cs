@@ -57,19 +57,10 @@ namespace DataAccessLayer.Repositories
         {
             var result = await appDbContext.Tasks.FirstOrDefaultAsync(t=>t.Id==task.Id);
 
-          
-                if (task.ProjectId != 0)
-                {
-                    result.ProjectId = task.ProjectId;
-                }
-                else if (task.Project != null)
-                {
-                    result.ProjectId = task.Project.Id;
-                }
-
-            result.TaskStatus = task.TaskStatus;
-            result.Description=task.Description;
+            result.ProjectId = task.ProjectId;
             result.Name = task.Name;
+            result.Description=task.Description;
+            result.TaskStatus = task.TaskStatus;
             result.Priority = task.Priority;
                
                 
@@ -79,6 +70,12 @@ namespace DataAccessLayer.Repositories
             
 
           
+        }
+
+        public Project GetProject(int projectId)
+        {
+            var result=  appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
+            return result.Result;
         }
     }
 }

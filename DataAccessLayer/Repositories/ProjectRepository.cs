@@ -21,25 +21,21 @@ namespace DataAccessLayer.Repositories
         }
         public async Task<Project> AddProject(Project project)
         {
-            //var result = await appDbContext.Projects.AddAsync(project);
-           await appDbContext.Projects.AddAsync(project);
+            
+            await appDbContext.Projects.AddAsync(project);
             await appDbContext.SaveChangesAsync();
 
-            //return result.Entity;
+           
             return project;
         }
 
         public async Task<Project> DeleteProject(Project project)
         {
-            //var result = await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
-
-                appDbContext.Projects.Remove(project);
+          
+                 appDbContext.Projects.Remove(project);
                  await appDbContext.SaveChangesAsync();
-                return project;
-          
 
-          
-           
+                return project;
             
         }
 
@@ -75,6 +71,11 @@ namespace DataAccessLayer.Repositories
             var result= await appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name);
             return result;
            
+        }
+       public async Task<Project> GetProjectByNameAndId(string name, int id)
+        {
+            var result = await appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name && p.Id != id);
+            return result;
         }
 
         public async Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus)

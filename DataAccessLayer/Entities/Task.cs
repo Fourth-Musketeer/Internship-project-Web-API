@@ -24,7 +24,7 @@ namespace DataAccessLayer.Entities
 
 
         [Required(ErrorMessage = "Task status is required")]
-        public TaskStatus TaskStatus { get; set; }
+        public CurrentTaskStatus TaskStatus { get; set; }
         public Project Project { get; set; }
 
 

@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Entities;
+using DataAccessLayer.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +13,7 @@ namespace BusinessLogicLayer.Models
     {
 
 
-        public int Id { get; set; }
+       
         public int ProjectId { get; set; }
 
         [Required(ErrorMessage = "Name is required")]
@@ -30,7 +31,9 @@ namespace BusinessLogicLayer.Models
 
 
         [Required(ErrorMessage = "Task status is required")]
-        public TaskStatus TaskStatus { get; set; }
-        public Project Project { get; set; }
+        public CurrentTaskStatus TaskStatus { get; set; }
+
+        public Project Project;
+       
     }
 }

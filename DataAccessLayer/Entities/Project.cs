@@ -18,9 +18,9 @@ namespace DataAccessLayer.Entities
 
         public string Name { get; set; }
         
-        [Required(ErrorMessage = "Start date is required")]
+        
         [DataType(DataType.DateTime,ErrorMessage ="Start date must be in date time format")]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
 
         [DataType(DataType.DateTime, ErrorMessage = "Completion date must be in date time format")]
@@ -31,7 +31,7 @@ namespace DataAccessLayer.Entities
 
         [Required(ErrorMessage = "Priority is required")]
         [Range(1, 10, ErrorMessage = "Project priority range is invalid (1-10)")]
-        [RegularExpression("^[0-9]*$", ErrorMessage = "Only numbers are alowed in priority (1-10)")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "Only numbers are alowed in field priority (1-10)")]
         public int Priority { get; set; }
 
 

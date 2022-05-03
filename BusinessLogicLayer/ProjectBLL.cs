@@ -1,4 +1,5 @@
 ﻿using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Models;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Enums;
 using DataAccessLayer.Interfaces;
@@ -36,9 +37,29 @@ namespace BusinessLogicLayer
         }
 
 
-        public async Task<Project> AddProject(Project project)
+        public async Task<Project> AddProject(ProjectModel project)
         {
-            var result = await _projectRepository.AddProject(project);
+
+            Project projectEntity = new Project  //automapper 
+            { 
+              Name=project.Name,
+              StartDate=project.StartDate,
+              CompletionDate=project.CompletionDate,
+              Priority=project.Priority,
+              CurrentStatus=CurrentProjectStatus.NotStarted
+            };
+
+            if (project.StartDate != null && project.CompletionDate == null)
+            {
+                projectEntity.CurrentStatus = CurrentProjectStatus.Active;
+            }
+            else if (project.StartDate != null && project.CompletionDate != null)
+            {
+                projectEntity.CurrentStatus = CurrentProjectStatus.Completed;
+            }
+           
+            var result = await _projectRepository.AddProject(projectEntity);
+
             return result;
 
         }
@@ -58,17 +79,38 @@ namespace BusinessLogicLayer
 
         }
 
-        public async Task<Project> UpdateProject(Project project)
+        public async Task<Project> UpdateProject(int ProjectId,ProjectModel project)
         {
-            var result = await _projectRepository.GetProject(project.Id);
+            
 
-            if (result != null)
+            Project projectEntity = new Project  
             {
-                await _projectRepository.UpdateProject(project);
-                return result;
+                Id = ProjectId,
+                Name = project.Name,
+                StartDate = project.StartDate,
+                CompletionDate = project.CompletionDate,
+                Priority = project.Priority,
+                
+            };
+
+            if (project.StartDate != null && project.CompletionDate == null)
+            {
+                projectEntity.CurrentStatus = CurrentProjectStatus.Active;
+            }
+            else if (project.StartDate != null && project.CompletionDate != null)
+            {
+                projectEntity.CurrentStatus = CurrentProjectStatus.Completed;
+            }
+            else
+            {
+                projectEntity.CurrentStatus = CurrentProjectStatus.NotStarted;
             }
 
-            return null;
+           var result = await _projectRepository.UpdateProject(projectEntity);
+
+            return result;
+
+            
         }
 
 
@@ -99,6 +141,12 @@ namespace BusinessLogicLayer
             var result =await _projectRepository.GetProjectByName(name);
             return result;
 
+        }
+
+       public async Task<Project> GetProjectByNameAndId(string name, int id)
+        {
+            var result = await _projectRepository.GetProjectByNameAndId(name, id);
+            return result;
         }
 
         //public bool ValidateDate(DateTime begin, DateTime? end)

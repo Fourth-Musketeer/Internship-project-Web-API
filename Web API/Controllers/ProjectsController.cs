@@ -10,6 +10,7 @@ using BusinessLogicLayer;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Enums;
 using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Models;
 
 namespace Web_API.Controllers
 {
@@ -62,7 +63,7 @@ namespace Web_API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Project>> CreateProject(Project project)
+        public async Task<ActionResult<Project>> CreateProject(ProjectModel project)
         {
             try
             {
@@ -77,13 +78,19 @@ namespace Web_API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (project.StartDate > project.CompletionDate)
+                else if (project.StartDate > project.CompletionDate)
                 {
                     ModelState.AddModelError("CompletionDate", "Completion date cannon be earlier that start date");
                     return BadRequest(ModelState);
                 }
-                       
-                
+
+                else if (project.StartDate==null && project.CompletionDate.HasValue)
+                {
+                    ModelState.AddModelError("CompletionDate", "Start date is null and completion date has value");
+                    return BadRequest(ModelState);
+                }
+
+
 
                 var createdProject = await _projectBLL.AddProject(project);
 
@@ -98,12 +105,11 @@ namespace Web_API.Controllers
 
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Project>> UpdateProject(int id, Project project)
+        public async Task<ActionResult<Project>> UpdateProject(int id, ProjectModel project)
         {
             try
             {
-                if (id != project.Id)
-                    return BadRequest("Project Id mismatch");
+                
 
 
                 var projectToUpdate = await _projectBLL.GetProject(id);
@@ -114,7 +120,7 @@ namespace Web_API.Controllers
                     return NotFound($"Project with Id = {id} not found");
                 }
 
-                var p = _projectBLL.GetProjectByName(project.Name).Result;
+                var p = _projectBLL.GetProjectByNameAndId(project.Name,id).Result;
 
                 if (p != null)
                 {
@@ -128,9 +134,14 @@ namespace Web_API.Controllers
                     ModelState.AddModelError("CompletionDate", "Completion date cannon be earlier that start date");
                     return BadRequest(ModelState);
                 }
+                else if (project.StartDate == null && project.CompletionDate.HasValue)
+                {
+                    ModelState.AddModelError("CompletionDate", "Start date is null and completion date has value");
+                    return BadRequest(ModelState);
+                }
 
 
-                return await _projectBLL.UpdateProject(project);
+                return await _projectBLL.UpdateProject(id,project);
 
 
             }
@@ -196,7 +207,16 @@ namespace Web_API.Controllers
         public async Task<ActionResult<Project>> Patch(int id, [FromBody] JsonPatchDocument<Project> patchEntity)
         {
 
-            return Ok(await _projectBLL.UpdateProjectPatch(id, patchEntity));
+            try
+            {
+                return Ok(await _projectBLL.UpdateProjectPatch(id, patchEntity));
+            }
+
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error patching data");
+            }
+           
            
         }
 
