@@ -78,7 +78,7 @@ namespace DataAccessLayer.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus)
+        public async Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus, string sort)
         {
             IQueryable<Project> query = appDbContext.Projects;
 
@@ -86,22 +86,35 @@ namespace DataAccessLayer.Repositories
             {
                 query = query.Where(p => p.Name.ToLower().Contains(name.ToLower()));
             }
-            if (priority!=0)
-            {
-                query = query.Where(p => p.Priority == priority);
-            }
             if (currentProjectStatus != null)
             {
                 query = query.Where(p => p.CurrentStatus == currentProjectStatus);
             }
+            if (priority!=0)
+            {
+                query = query.Where(p => p.Priority == priority);
+            }
+            if (sort == "asc")
+            {
+                query = query.OrderBy(p => p.Priority);
+            }
+           
+
 
             return await query.ToListAsync();
 
         
         }
 
-      
-          public async Task<Project> UpdateProjectPatch(int projectId, JsonPatchDocument<Project> project)
+       public async Task<IEnumerable<Entities.Task>> FindAllTasks(int projectId)
+        {
+            IQueryable<Entities.Task> AllTasksInProject = appDbContext.Tasks.Where(t=>t.ProjectId == projectId);
+
+            return await AllTasksInProject.ToListAsync();
+        }
+
+
+        public async Task<Project> UpdateProjectPatch(int projectId, JsonPatchDocument<Project> project)
         {
             var result = await appDbContext.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
 

@@ -16,6 +16,8 @@ namespace BusinessLogicLayer.Interfaces
         Task<DataAccessLayer.Entities.Task> DeleteTask(int taskId);
         Task<DataAccessLayer.Entities.Task> UpdateTask(int taskId, TaskModel taskModel);
 
+
+
         Project GetProject(int projectId);
 
     }

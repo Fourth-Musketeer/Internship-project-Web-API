@@ -181,11 +181,11 @@ namespace Web_API.Controllers
         }
 
         [HttpGet("{search}")]
-        public async Task<ActionResult<IEnumerable<Project>>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus)
+        public async Task<ActionResult<IEnumerable<Project>>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus, string sort)
         {
             try
             {
-                var result = await _projectBLL.Search(name, priority, currentProjectStatus);
+                var result = await _projectBLL.Search(name, priority, currentProjectStatus, sort);
 
                 if (result.Any())
                 {
@@ -203,6 +203,30 @@ namespace Web_API.Controllers
             }
         }
 
+        [HttpGet("{id:int}/Tasks")]
+        public async Task<ActionResult<IEnumerable<Project>>> FindAllTasks(int id)
+        {
+            try
+            {
+                var result = await _projectBLL.FindAllTasks(id);
+               
+
+                if (result.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving tasks from the database");
+            }
+        }
+
         [HttpPatch("{id:int}")]
         public async Task<ActionResult<Project>> Patch(int id, [FromBody] JsonPatchDocument<Project> patchEntity)
         {
@@ -216,6 +240,7 @@ namespace Web_API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error patching data");
             }
+
            
            
         }

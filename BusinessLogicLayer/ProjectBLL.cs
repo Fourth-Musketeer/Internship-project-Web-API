@@ -128,11 +128,16 @@ namespace BusinessLogicLayer
         }
 
 
-        public async Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus)
+        public async Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus, string sort)
         {
 
-            return await _projectRepository.Search( name,  priority,  currentProjectStatus);
+            return await _projectRepository.Search( name,  priority,  currentProjectStatus,  sort);
 
+        }
+
+        public async Task<IEnumerable<DataAccessLayer.Entities.Task>> FindAllTasks(int projectId)
+        {
+            return await _projectRepository.FindAllTasks(projectId);
         }
 
 
@@ -148,6 +153,8 @@ namespace BusinessLogicLayer
             var result = await _projectRepository.GetProjectByNameAndId(name, id);
             return result;
         }
+
+      
 
         //public bool ValidateDate(DateTime begin, DateTime? end)
         //{
