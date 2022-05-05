@@ -13,8 +13,8 @@ Dependencies used in project 'WebAPI':
 * Microsoft.Entity.FrameworkCore.Design v5.0.16
 * Microsoft.AspNetCore.Mvc.NewtonsoftJson v5.0.16
 
-MS SQL Server was used for database
-Unit Tests were created using xUnit and Moq
+MS SQL Server was used for database  
+Unit Tests were created using xUnit and Moq  
 
 
 After downloading solution go to WebAPI project and in appsettings.json provide name of the local server. After name is provided, type command 'Update-Database' in package manager console. Database should be created and project is ready to use.
