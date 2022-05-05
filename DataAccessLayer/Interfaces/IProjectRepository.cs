@@ -1,5 +1,5 @@
 ﻿using DataAccessLayer.Entities;
-using DataAccessLayer.Enums;
+using WebAPIShared.Enums;
 using Microsoft.AspNetCore.JsonPatch;
 using System.Collections.Generic;
 using System.Threading.Tasks;

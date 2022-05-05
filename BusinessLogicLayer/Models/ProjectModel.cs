@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Enums;
+﻿
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,9 +10,6 @@ namespace BusinessLogicLayer.Models
 {
     public class ProjectModel
     {
-
-
-        
 
 
         [Required]

@@ -1,4 +1,4 @@
-﻿namespace DataAccessLayer.Enums
+﻿namespace WebAPIShared.Enums
 {
     public enum CurrentProjectStatus
     {

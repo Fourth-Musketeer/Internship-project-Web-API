@@ -11,7 +11,7 @@ namespace DataAccessLayer.Interfaces
         Task<Entities.Task> GetTask(int taskId);
         Task<Entities.Task> AddTask(Entities.Task task);
         Task<Entities.Task> UpdateTask(Entities.Task task);
-        Task<Entities.Task> DeleteTask(int taskId);
+        Task<Entities.Task> DeleteTask(Entities.Task task);
         Project GetProject(int projectId);
 
     }

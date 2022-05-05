@@ -14,8 +14,9 @@ Dependencies used in project 'WebAPI':
 * Microsoft.AspNetCore.Mvc.NewtonsoftJson v5.0.16
 
 MS SQL Server was used for database
+Unit Tests were created using xUnit and Moq
 
 
-After downloading solution go to WebAPI project and in appsettings.json provide name of the local server. After name is provided, type 'Update-Database' in packet manager console. Database should be created and project is ready to use.
+After downloading solution go to WebAPI project and in appsettings.json provide name of the local server. After name is provided, type command 'Update-Database' in package manager console. Database should be created and project is ready to use.
 In database we have 2 enities. Projects and tasks. 1 project can have multiple tasks, 1 task must belong to only 1 project. User can add,create,view and delete projects and tasks. Swagger was used for documenting API. Special cases are covered, user cannot break application. 
 

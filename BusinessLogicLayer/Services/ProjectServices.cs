@@ -1,7 +1,7 @@
 ﻿using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Models;
 using DataAccessLayer.Entities;
-using DataAccessLayer.Enums;
+using WebAPIShared.Enums;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.JsonPatch;
@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer
 {
-    public class ProjectBLL : IProjectBLL
+    public class ProjectServices : IProjectServices
     {
 
         private readonly IProjectRepository _projectRepository;
 
-        public ProjectBLL(IProjectRepository projectRepository)
+        public ProjectServices(IProjectRepository projectRepository)
         {
            _projectRepository=projectRepository;
         }
@@ -27,20 +27,30 @@ namespace BusinessLogicLayer
 
         public async Task<Project> GetProject(int projectId)
         {
-            ///check existance
+           
             return await _projectRepository.GetProject(projectId);
         }
 
         public async Task<IEnumerable<Project>> GetProjects()
         {
-            return await _projectRepository.GetProjects();
+            
+
+            var projects = await _projectRepository.GetProjects();
+
+            if (projects == null)
+            {
+                return null;
+            }
+
+            return projects;
+
         }
 
 
         public async Task<Project> AddProject(ProjectModel project)
         {
 
-            Project projectEntity = new Project  //automapper 
+            Project projectEntity = new Project   
             { 
               Name=project.Name,
               StartDate=project.StartDate,
@@ -69,13 +79,12 @@ namespace BusinessLogicLayer
         {
             var result = await _projectRepository.GetProject(projectId);
 
-            if (result != null)
-            {
+            
                 await _projectRepository.DeleteProject(result);
                 return result;
-            }
+            
 
-            return null;
+          
 
         }
 
@@ -129,10 +138,29 @@ namespace BusinessLogicLayer
 
         public async Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus, string sort)
         {
+            IEnumerable<Project> query = await _projectRepository.GetProjects();
 
-            return await _projectRepository.Search( name,  priority,  currentProjectStatus,  sort);
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(p => p.Name.ToLower().Contains(name.ToLower()));
+            }
+            if (currentProjectStatus != null)
+            {
+                query = query.Where(p => p.CurrentStatus == currentProjectStatus);
+            }
+            if (priority != 0)
+            {
+                query = query.Where(p => p.Priority == priority);
+            }
+            if (sort == "asc")
+            {
+                query = query.OrderBy(p => p.Priority);
+            }
 
-        }
+            //  return await _projectRepository.Search( name,  priority,  currentProjectStatus,  sort);
+            return query;
+
+            }
 
         public async Task<IEnumerable<DataAccessLayer.Entities.Task>> FindAllTasks(int projectId)
         {

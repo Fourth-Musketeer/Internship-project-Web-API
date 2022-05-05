@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Enums;
+﻿using WebAPIShared.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 

@@ -7,22 +7,22 @@ using DataAccessLayer.Interfaces;
 using DataAccessLayer.Entities;
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Models;
-using DataAccessLayer.Enums;
+using WebAPIShared.Enums;
 
 namespace BusinessLogicLayer
 {
-    public class TaskBLL : ITaskBLL
+    public class TaskServices : ITaskServices
     {
         private readonly ITaskRepository _taskRepository;
         
-        public TaskBLL(ITaskRepository taskRepository)
+        public TaskServices(ITaskRepository taskRepository)
         {
             _taskRepository = taskRepository;   
         }
 
         public async Task<DataAccessLayer.Entities.Task> GetTask(int taskId)
         {
-            ///existance checked at controller
+            
             return await _taskRepository.GetTask(taskId);
         }
 
@@ -63,17 +63,11 @@ namespace BusinessLogicLayer
                 
         }
 
-        public async Task<DataAccessLayer.Entities.Task> DeleteTask(int taskId)
+        public async Task<DataAccessLayer.Entities.Task> DeleteTask(DataAccessLayer.Entities.Task task)
         {
-            var result = await _taskRepository.GetTask(taskId);
-
-            if (result != null)
-            {
-                await _taskRepository.DeleteTask(taskId);
-                return result;
-            }
-
-            return null;
+    
+                await _taskRepository.DeleteTask(task);
+                return task;
 
         }
 

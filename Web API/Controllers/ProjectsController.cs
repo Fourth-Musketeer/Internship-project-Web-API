@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.JsonPatch;
-using BusinessLogicLayer;
 using DataAccessLayer.Entities;
-using DataAccessLayer.Enums;
+using WebAPIShared.Enums;
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Models;
 
@@ -19,19 +17,20 @@ namespace Web_API.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly IProjectBLL _projectBLL;
+        private readonly IProjectServices _projectServices;
 
-        public ProjectsController(IProjectBLL projectBLL)
+        public ProjectsController(IProjectServices projectServices)
         {
-            _projectBLL = projectBLL;
+            _projectServices = projectServices;
+            
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetProjets()
+        public async Task<ActionResult<IEnumerable<Project>>> GetProjets()
         {
             try
             {
-                return Ok(await _projectBLL.GetProjects());
+                return Ok(await _projectServices.GetProjects());
             }
             catch (System.Exception)
             {
@@ -46,7 +45,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                var result = await _projectBLL.GetProject(id);
+                var result = await _projectServices.GetProject(id);
 
                 if (result == null)
                 {
@@ -70,7 +69,7 @@ namespace Web_API.Controllers
                 if (project == null)
                     return BadRequest();
 
-                var p = _projectBLL.GetProjectByName(project.Name).Result;
+                var p = _projectServices.GetProjectByName(project.Name).Result;
 
                 if (p != null)
                 {
@@ -84,18 +83,26 @@ namespace Web_API.Controllers
                     return BadRequest(ModelState);
                 }
 
-                else if (project.StartDate==null && project.CompletionDate.HasValue)
+                else if (project.StartDate == null && project.CompletionDate.HasValue)
                 {
                     ModelState.AddModelError("CompletionDate", "Start date is null and completion date has value");
+                    return BadRequest(ModelState);
+                }
+                else if (!int.TryParse(project.Priority.ToString(), out _))
+                {
+                    ModelState.AddModelError("Priority", "Only numbers are alowed in priority (1-10)");
                     return BadRequest(ModelState);
                 }
 
 
 
-                var createdProject = await _projectBLL.AddProject(project);
+                var createdProject = await _projectServices.AddProject(project);
 
-                return CreatedAtAction(nameof(GetProject), new { id = createdProject.Id }, createdProject);
+                // return CreatedAtAction(nameof(GetProject), new { id = createdProject.Id }, createdProject);
+
+                return createdProject;
             }
+
             catch (System.Exception)
             {
 
@@ -112,7 +119,7 @@ namespace Web_API.Controllers
                 
 
 
-                var projectToUpdate = await _projectBLL.GetProject(id);
+                var projectToUpdate = await _projectServices.GetProject(id);
                
 
                 if (projectToUpdate == null)
@@ -120,7 +127,7 @@ namespace Web_API.Controllers
                     return NotFound($"Project with Id = {id} not found");
                 }
 
-                var p = _projectBLL.GetProjectByNameAndId(project.Name,id).Result;
+                var p = _projectServices.GetProjectByNameAndId(project.Name,id).Result;
 
                 if (p != null)
                 {
@@ -141,7 +148,7 @@ namespace Web_API.Controllers
                 }
 
 
-                return await _projectBLL.UpdateProject(id,project);
+                return await _projectServices.UpdateProject(id,project);
 
 
             }
@@ -160,7 +167,7 @@ namespace Web_API.Controllers
             {
 
 
-                var projectToDelete = await _projectBLL.GetProject(id);
+                var projectToDelete = await _projectServices.GetProject(id);
 
                 if (projectToDelete == null)
                 {
@@ -169,7 +176,8 @@ namespace Web_API.Controllers
 
 
 
-                return Ok(await _projectBLL.DeleteProject(id));
+               // return Ok(await _projectBLL.DeleteProject(id));
+                return StatusCode(StatusCodes.Status200OK, await _projectServices.DeleteProject(id));
 
 
             }
@@ -185,7 +193,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                var result = await _projectBLL.Search(name, priority, currentProjectStatus, sort);
+                var result = await _projectServices.Search(name, priority, currentProjectStatus, sort);
 
                 if (result.Any())
                 {
@@ -196,7 +204,7 @@ namespace Web_API.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception)
+            catch (Exception )
             {
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error retrieving data from the database");
@@ -208,7 +216,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                var result = await _projectBLL.FindAllTasks(id);
+                var result = await _projectServices.FindAllTasks(id);
                
 
                 if (result.Any())
@@ -233,7 +241,7 @@ namespace Web_API.Controllers
 
             try
             {
-                return Ok(await _projectBLL.UpdateProjectPatch(id, patchEntity));
+                return Ok(await _projectServices.UpdateProjectPatch(id, patchEntity));
             }
 
             catch

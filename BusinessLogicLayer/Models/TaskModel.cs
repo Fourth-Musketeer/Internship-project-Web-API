@@ -1,19 +1,19 @@
 ﻿using DataAccessLayer.Entities;
-using DataAccessLayer.Enums;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebAPIShared.Enums;
 
 namespace BusinessLogicLayer.Models
 {
     public class TaskModel
     {
 
-
-       
+      
         public int ProjectId { get; set; }
 
         [Required(ErrorMessage = "Name is required")]

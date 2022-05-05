@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
+    <ProjectReference Include="..\WebApiShared\WebAPIShared.csproj" />
   </ItemGroup>
 
 </Project>

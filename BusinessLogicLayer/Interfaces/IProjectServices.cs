@@ -1,16 +1,13 @@
 ﻿using BusinessLogicLayer.Models;
 using DataAccessLayer.Entities;
-using DataAccessLayer.Enums;
 using Microsoft.AspNetCore.JsonPatch;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using WebAPIShared.Enums;
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface IProjectBLL
+    public interface IProjectServices
     {
 
          Task<Project> GetProject(int projectId);

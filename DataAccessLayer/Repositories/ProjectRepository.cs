@@ -1,5 +1,5 @@
 ﻿using DataAccessLayer.Entities;
-using DataAccessLayer.Enums;
+using WebAPIShared.Enums;
 using DataAccessLayer.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
@@ -15,17 +15,18 @@ namespace DataAccessLayer.Repositories
     {
 
         public readonly AppDbContext _appDbContext;
+
         public ProjectRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;  
         }
+
         public async Task<Project> AddProject(Project project)
         {
             
             await _appDbContext.Projects.AddAsync(project);
             await _appDbContext.SaveChangesAsync();
 
-           
             return project;
         }
 
@@ -62,51 +63,52 @@ namespace DataAccessLayer.Repositories
 
                 await _appDbContext.SaveChangesAsync();
                 return result;
-
            
         }
 
         public  async Task<Project> GetProjectByName(string name)
         {
-            var result= await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name);
-            return result;
+            return await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name);
+            
            
         }
        public async Task<Project> GetProjectByNameAndId(string name, int id)
         {
-            var result = await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name && p.Id != id);
-            return result;
+            return  await _appDbContext.Projects.FirstOrDefaultAsync(p => p.Name == name && p.Id != id);
+          
         }
 
-        public async Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus, string sort)
+        public  Task<IEnumerable<Project>> Search(string name, int priority, CurrentProjectStatus? currentProjectStatus, string sort)
         {
-            IQueryable<Project> query = _appDbContext.Projects;
+            //IQueryable<Project> query = _appDbContext.Projects;
 
-            if (!string.IsNullOrEmpty(name))
-            {
-                query = query.Where(p => p.Name.ToLower().Contains(name.ToLower()));
-            }
-            if (currentProjectStatus != null)
-            {
-                query = query.Where(p => p.CurrentStatus == currentProjectStatus);
-            }
-            if (priority!=0)
-            {
-                query = query.Where(p => p.Priority == priority);
-            }
-            if (sort == "asc")
-            {
-                query = query.OrderBy(p => p.Priority);
-            }
-           
+            //if (!string.IsNullOrEmpty(name))
+            //{
+            //    query = query.Where(p => p.Name.ToLower().Contains(name.ToLower()));
+            //}
+            //if (currentProjectStatus != null)
+            //{
+            //    query = query.Where(p => p.CurrentStatus == currentProjectStatus);
+            //}
+            //if (priority != 0)
+            //{
+            //    query = query.Where(p => p.Priority == priority);
+            //}
+            //if (sort == "asc")
+            //{
+            //    query = query.OrderBy(p => p.Priority);
+            //}
 
 
-            return await query.ToListAsync();
+            //return await query.ToListAsync();
 
-        
+
+            throw  new System.NotImplementedException();// logic moved to ProjectServices
+
+
         }
 
-       public async Task<IEnumerable<Entities.Task>> FindAllTasks(int projectId)
+        public async Task<IEnumerable<Entities.Task>> FindAllTasks(int projectId)
         {
             IQueryable<Entities.Task> AllTasksInProject = _appDbContext.Tasks.Where(t=>t.ProjectId == projectId);
 
@@ -122,8 +124,9 @@ namespace DataAccessLayer.Repositories
                 await _appDbContext.SaveChangesAsync();
                 return result;
             
-
            
         }
+
+       
     }
 }

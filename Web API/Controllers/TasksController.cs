@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 using System;
-using BusinessLogicLayer;
-using DataAccessLayer.Entities;
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Models;
 using System.Net;
@@ -16,11 +14,11 @@ namespace Web_API.Controllers
     public class TasksController : ControllerBase
     {
 
-        private readonly ITaskBLL _taskBLL;
+        private readonly ITaskServices _taskServices;
 
-        public TasksController(ITaskBLL taskBLL)
+        public TasksController(ITaskServices taskServices)
         {
-            _taskBLL = taskBLL;
+            _taskServices = taskServices;
         }
 
         [HttpGet]
@@ -29,7 +27,7 @@ namespace Web_API.Controllers
 
             try
             {
-                return  Ok(await _taskBLL.GetTasks());
+                return  Ok(await _taskServices.GetTasks());
             }
             catch (Exception)
             {
@@ -45,7 +43,7 @@ namespace Web_API.Controllers
         {
             try
             {
-                var result = await _taskBLL.GetTask(id);
+                var result = await _taskServices.GetTask(id);
 
                 if (result == null)
                 {
@@ -71,14 +69,14 @@ namespace Web_API.Controllers
                 if (taskModel == null)
                     return BadRequest();
 
-                var ProjectOfTask = _taskBLL.GetProject(taskModel.ProjectId);
+                var ProjectOfTask = _taskServices.GetProject(taskModel.ProjectId);
 
                 if (ProjectOfTask == null)
                 {
                     return NotFound($"Project with Id = {taskModel.ProjectId} not found");
                 }
 
-                var createdTask = await _taskBLL.AddTask(taskModel);
+                var createdTask = await _taskServices.AddTask(taskModel);
 
                 if (createdTask == null)
                 {
@@ -101,9 +99,9 @@ namespace Web_API.Controllers
         {
             try
             {
-                var ProjectOfTask =  _taskBLL.GetProject(taskModel.ProjectId);
+                var ProjectOfTask = _taskServices.GetProject(taskModel.ProjectId);
 
-                var taskToUpdate = _taskBLL.GetTask(id).Result;///!!!
+                var taskToUpdate = _taskServices.GetTask(id).Result;///!!!
 
                 if (ProjectOfTask == null)
                 {
@@ -114,7 +112,7 @@ namespace Web_API.Controllers
                     return NotFound($"Task with Id = {id} not found");
                 }
 
-                var UpdatedTask= await _taskBLL.UpdateTask(id, taskModel);
+                var UpdatedTask= await _taskServices.UpdateTask(id, taskModel);
               
                 if (UpdatedTask == null)
                 {
@@ -147,7 +145,7 @@ namespace Web_API.Controllers
             {
 
 
-                var taskToDelete = await _taskBLL.GetTask(id);
+                var taskToDelete = await _taskServices.GetTask(id);
 
                 if (taskToDelete == null)
                 {
@@ -156,7 +154,7 @@ namespace Web_API.Controllers
 
 
 
-                return Ok(await _taskBLL.DeleteTask(id));
+                return Ok(await _taskServices.DeleteTask(taskToDelete));
 
 
             }

@@ -12,34 +12,26 @@ namespace DataAccessLayer.Repositories
     public class TaskRepository : ITaskRepository
     {
         private readonly AppDbContext _appDbContext;
+
         public TaskRepository(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
         }
+
         public async Task<Entities.Task> AddTask(Entities.Task task)
         {
-            if (task.Project != null)
-            {
-                _appDbContext.Entry(task.Project).State = EntityState.Unchanged;
-            }
-
+          
             var result= await _appDbContext.Tasks.AddAsync(task);
             await _appDbContext.SaveChangesAsync();
             return result.Entity;
         }
 
-        public async Task<Entities.Task> DeleteTask(int taskId)
-        {
-            var result = await _appDbContext.Tasks.FirstOrDefaultAsync(t => t.Id == taskId);
+        public async Task<Entities.Task> DeleteTask(Entities.Task task)
+        { 
 
-           if (result != null)
-            {
-                _appDbContext.Tasks.Remove(result);
+                _appDbContext.Tasks.Remove(task);
                 await _appDbContext.SaveChangesAsync();
-                return result;
-            }
-
-            return null;
+                return task;
 
         }
 
