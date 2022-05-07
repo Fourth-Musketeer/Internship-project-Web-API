@@ -31,6 +31,8 @@ namespace BusinessLogicLayer.Models
 
 
         [Required(ErrorMessage = "Task status is required")]
+
+        
         public CurrentTaskStatus TaskStatus { get; set; }
 
         public Project Project;

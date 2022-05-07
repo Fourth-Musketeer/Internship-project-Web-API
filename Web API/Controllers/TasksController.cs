@@ -6,6 +6,7 @@ using System;
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Models;
 using System.Net;
+using WebAPIShared.Enums;
 
 namespace Web_API.Controllers
 {
@@ -52,6 +53,7 @@ namespace Web_API.Controllers
 
                 return result;
             }
+
             catch (Exception)
             {
 

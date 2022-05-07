@@ -22,8 +22,9 @@ namespace BusinessLogicLayer
 
         public async Task<DataAccessLayer.Entities.Task> GetTask(int taskId)
         {
-            
+
             return await _taskRepository.GetTask(taskId);
+            
         }
 
         public async Task<IEnumerable<DataAccessLayer.Entities.Task>> GetTasks()
@@ -37,6 +38,19 @@ namespace BusinessLogicLayer
 
             var project = _taskRepository.GetProject(taskModel.ProjectId);
 
+            if (project.StartDate == null && (taskModel.TaskStatus == CurrentTaskStatus.Done || taskModel.TaskStatus == CurrentTaskStatus.InProgress))
+            {
+                return null;
+            }
+            else if (project.CompletionDate.HasValue && (taskModel.TaskStatus == CurrentTaskStatus.ToDo || taskModel.TaskStatus == CurrentTaskStatus.InProgress))
+            {
+                return null;
+            }
+            else if (!Enum.IsDefined(typeof(CurrentTaskStatus), taskModel.TaskStatus))
+            {
+                return null;
+            }
+
             DataAccessLayer.Entities.Task taskEntity = new DataAccessLayer.Entities.Task
             { 
                 Name=taskModel.Name,
@@ -47,14 +61,7 @@ namespace BusinessLogicLayer
 
             };
 
-            if (taskEntity.Project.StartDate == null && (taskModel.TaskStatus == CurrentTaskStatus.Done || taskModel.TaskStatus == CurrentTaskStatus.InProgress))
-            {
-                return null;
-            }
-            else if (taskEntity.Project.CompletionDate.HasValue && (taskModel.TaskStatus == CurrentTaskStatus.ToDo || taskModel.TaskStatus == CurrentTaskStatus.InProgress))
-            {
-                return null;
-            }
+           
 
             taskEntity.TaskStatus = taskModel.TaskStatus;
 
@@ -78,6 +85,19 @@ namespace BusinessLogicLayer
             var project = _taskRepository.GetProject(taskModel.ProjectId);
 
 
+            if (project.StartDate == null && (taskModel.TaskStatus == CurrentTaskStatus.Done || taskModel.TaskStatus == CurrentTaskStatus.InProgress))
+            {
+                return null;
+            }
+            else if (project.CompletionDate.HasValue && (taskModel.TaskStatus == CurrentTaskStatus.ToDo || taskModel.TaskStatus == CurrentTaskStatus.InProgress))
+            {
+                return null;
+            }
+            else if (!Enum.IsDefined(typeof(CurrentTaskStatus), taskModel.TaskStatus))
+            {
+                return null;
+            }
+
 
             DataAccessLayer.Entities.Task taskEntity = new DataAccessLayer.Entities.Task
             {
@@ -88,15 +108,6 @@ namespace BusinessLogicLayer
                 Priority = taskModel.Priority,
                 Project = project
             };
-
-            if (taskEntity.Project.StartDate == null && (taskModel.TaskStatus == CurrentTaskStatus.Done || taskModel.TaskStatus == CurrentTaskStatus.InProgress))
-            {
-                return null;
-            }
-            else if (taskEntity.Project.CompletionDate.HasValue && (taskModel.TaskStatus == CurrentTaskStatus.ToDo || taskModel.TaskStatus == CurrentTaskStatus.InProgress))
-            {
-                return null;
-            }
 
 
 
