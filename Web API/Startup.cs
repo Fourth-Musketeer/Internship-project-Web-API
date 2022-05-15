@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 
@@ -39,8 +40,9 @@ namespace Web_API
             services.AddScoped<ITaskRepository, TaskRepository>();
             services.AddScoped<IProjectServices,ProjectServices>();
             services.AddScoped<ITaskServices ,TaskServices>();
-        
+           
             services.AddControllers().AddNewtonsoftJson();
+           
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Web_API", Version = "v1" });

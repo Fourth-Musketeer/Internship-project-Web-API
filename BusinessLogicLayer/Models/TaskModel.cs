@@ -1,11 +1,8 @@
 ﻿using DataAccessLayer.Entities;
-
+using Newtonsoft.Json.Converters;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using WebAPIShared.Enums;
 
 namespace BusinessLogicLayer.Models
@@ -32,7 +29,7 @@ namespace BusinessLogicLayer.Models
 
         [Required(ErrorMessage = "Task status is required")]
 
-        
+        [JsonConverter(typeof(StringEnumConverter))]
         public CurrentTaskStatus TaskStatus { get; set; }
 
         public Project Project;

@@ -160,7 +160,7 @@ namespace Web_API.Controllers
 
 
             }
-            catch (Exception )
+            catch (Exception)
             {
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting task record");

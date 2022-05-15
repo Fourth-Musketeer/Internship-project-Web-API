@@ -22,14 +22,13 @@ namespace BusinessLogicLayer
 
         public async Task<DataAccessLayer.Entities.Task> GetTask(int taskId)
         {
-
             return await _taskRepository.GetTask(taskId);
-            
+
         }
 
         public async Task<IEnumerable<DataAccessLayer.Entities.Task>> GetTasks()
         {
-            return await _taskRepository.GetTasks();
+            return await _taskRepository.GetTasks();        
         }
 
         public async Task<DataAccessLayer.Entities.Task> AddTask(TaskModel taskModel)
@@ -57,14 +56,11 @@ namespace BusinessLogicLayer
                 ProjectId=taskModel.ProjectId,
                 Description=taskModel.Description,
                 Priority=taskModel.Priority,
-                Project=project      
-
+                Project=project,
+                TaskStatus=taskModel.TaskStatus,
             };
 
            
-
-            taskEntity.TaskStatus = taskModel.TaskStatus;
-
             var result = await _taskRepository.AddTask(taskEntity);
             return result;
                 

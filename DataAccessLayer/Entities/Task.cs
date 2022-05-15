@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
+
 namespace DataAccessLayer.Entities
 {
     public class Task
@@ -22,7 +23,7 @@ namespace DataAccessLayer.Entities
         [Range(1, 10, ErrorMessage = "Task priority range is invalid (1-10)")]
         public int Priority { get; set; }
 
-
+       
         [Required(ErrorMessage = "Task status is required")]
         public CurrentTaskStatus TaskStatus { get; set; }
         public Project Project { get; set; }

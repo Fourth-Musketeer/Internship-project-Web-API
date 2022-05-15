@@ -12,6 +12,9 @@ using Web_API.Controllers;
 using WebAPIShared.Enums;
 using Xunit;
 using Task = System.Threading.Tasks.Task;
+using Microsoft.VisualBasic.CompilerServices;
+
+
 
 namespace WebApiTests
 {
@@ -41,15 +44,15 @@ namespace WebApiTests
         {
             //Arange 
 
-            var project = _projects.ElementAt(0);//Fake project we got from our fake project list 
+            var project = _projects.ElementAt(0);
 
             _projectServicesMock.Setup(x => x.GetProject(project.Id)).ReturnsAsync(_projects.ElementAt(0));
                                                                                                    
             //act
             var projectDTO = await _projectsControllerTest.GetProject(project.Id);
-          
+           // var statusCode = projectDTO as ObjectResult;
             //Assert
-
+           
             Assert.Equal(project.Id, projectDTO.Value.Id);                                                  
             Assert.Equal(project.Name, projectDTO.Value.Name);
 
@@ -120,7 +123,7 @@ namespace WebApiTests
         }
 
         [Fact]
-        public async Task UpdateProjectShouldUpdateProjectIfEverythingIsOk()
+        public async Task UpdateProjectShouldReturnUpdatedProjectIfEverythingIsOk()
         {
             var projectModel = new ProjectModel
             {
@@ -150,23 +153,50 @@ namespace WebApiTests
         }
 
 
-        //[Fact]
-        //public async Task DeleteProjectShouldDeleteProjectIfProjectExists()
-        //{
-        //    var projectId = _projects.ElementAt(1).Id;
+        [Fact]
+        public async Task DeleteProjectShouldReturnStatusCode200()
+        {
+            var projectId = _projects.ElementAt(1).Id;
 
-        //    _projectBLLMock.Setup(x => x.GetProject(projectId)).ReturnsAsync(_projects.ElementAt(1));
-        //    _projectBLLMock.Setup(x => x.DeleteProject(projectId)).ReturnsAsync(_projects.ElementAt(1));
+            _projectServicesMock.Setup(x => x.GetProject(projectId)).ReturnsAsync(_projects.ElementAt(1));
+            _projectServicesMock.Setup(x => x.DeleteProject(projectId)).ReturnsAsync(_projects.ElementAt(1));
+
+            //Act
+            var actionResult = await _projectsControllerTest.DeleteProject(projectId);
+            var result = actionResult.Result as ObjectResult;
+
+            //Assert
+           
+            Assert.Equal((int)HttpStatusCode.OK,result.StatusCode);
+        }
 
 
-        //    var result = await _projectsControllerTest.DeleteProject(projectId);
-        //    var expected = (StatusCodeResult)result.Result;
+        [Fact]
+        public async Task FindAllTasksShouldReturnStatusCode200()
+        {
+            //Arange
+            var projectId= _projects.ElementAt(2).Id;
+            List<DataAccessLayer.Entities.Task> tasks= new List<DataAccessLayer.Entities.Task>();
+            var task = new DataAccessLayer.Entities.Task()
+            {
+                Description = "desc..",
+                Id = 10,
+                Name = "task 103",
+                ProjectId = projectId,
+                Priority = 1,
+                TaskStatus = CurrentTaskStatus.ToDo
+            };
+            tasks.Add(task);
 
+             _projectServicesMock.Setup(x => x.FindAllTasks(projectId)).ReturnsAsync(tasks);
 
-        //    Assert.Equal((int)HttpStatusCode.OK, expected.StatusCode);
-        //}
+            //Act
+            var actionResult = await _projectsControllerTest.FindAllTasks(projectId);
+            var result=actionResult.Result as ObjectResult;
 
-
+            //Asert
+            Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);
+        }
 
     }
 }

@@ -212,7 +212,7 @@ namespace Web_API.Controllers
         }
 
         [HttpGet("{id:int}/Tasks")]
-        public async Task<ActionResult<IEnumerable<Project>>> FindAllTasks(int id)
+        public async Task<ActionResult<IEnumerable<DataAccessLayer.Entities.Task>>> FindAllTasks(int id)
         {
             try
             {

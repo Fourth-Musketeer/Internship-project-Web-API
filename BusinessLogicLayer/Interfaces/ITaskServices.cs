@@ -11,11 +11,11 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface ITaskServices
     {
-        Task<DataAccessLayer.Entities.Task> GetTask(int taskId);
-        Task<IEnumerable<DataAccessLayer.Entities.Task>> GetTasks();
-        Task<DataAccessLayer.Entities.Task> AddTask(TaskModel taskModel);
-        Task<DataAccessLayer.Entities.Task> DeleteTask(Task task);
-        Task<DataAccessLayer.Entities.Task> UpdateTask(int taskId, TaskModel taskModel);
+        Task<Task> GetTask(int taskId);
+        Task<IEnumerable<Task>> GetTasks();
+        Task<Task> AddTask(TaskModel taskModel);
+        Task<Task> DeleteTask(Task task);
+        Task<Task> UpdateTask(int taskId, TaskModel taskModel);
         Project GetProject(int projectId);
 
     }
